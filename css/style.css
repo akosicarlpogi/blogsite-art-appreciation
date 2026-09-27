@@ -33,3 +33,92 @@ footer {
     border-top: 1px solid #ddd;
     margin-top: 40px;
 }
+
+p {
+    text-align: justify;
+    text-indent: 40px;
+}
+
+.description,
+.interpretation,
+.our-interpretation {
+    margin-bottom: 16px;
+}
+
+body {
+    margin: 0.2in 1in;
+}
+
+p {
+    text-align: justify;
+    text-indent: 40px;
+}
+
+.description,
+.interpretation,
+.our-interpretation {
+    margin-bottom: 24px;
+}
+
+.song-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
+.song-media {
+    width: 100%;
+}
+
+.song-media figure {
+    margin: 0;
+}
+
+.song-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.audio-player {
+    margin-top: 15px;
+}
+
+.audio-player audio {
+    width: 100%;
+}
+
+.ikigai .song-layout {
+    grid-template-columns: 1fr 400px;
+}
+
+.song-caption {
+    text-align: center;
+    text-indent: 0;
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+.song-artist {
+    text-align: center;
+    text-indent: 0;
+    margin-top: 0;
+}
+
+.artist{
+    margin-bottom: 4px;
+    text-indent: 0;
+}
+
+hr {
+    margin: 32px 0;
+}
+
+.artworks-title {
+    text-align: center;
+}
+
+.main-divider {
+    margin: 40px 0;
+}
