@@ -9,25 +9,30 @@
 </head>
 
 <body>
-    <header>
-        <h1>Arts & Appreciation</h1>
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#artworks">Artworks</a>
-            <a href="#about">About</a>
-        </nav>
-    </header>
+<div class="top-section">
+            <section id="home">
+                <h2>Welcome to Our Arts & Appreciation Blog</h2>
 
-    <main>
-        <section id="home">
-            <h2>Welcome to Our Arts & Appreciation Blog</h2>
-            <p>
-                This blog presents different works of art and our appreciation,
-                understanding, and interpretation of each work.
-            </p>
+                <p>
+                    This blog presents different works of art and our appreciation,
+                    understanding, and interpretation of each work.
+                </p>
+            </section>
+
+            <header>
+                <h1>Arts & Appreciation</h1>
+
+                <nav class="top-nav">
+                    <a href="#artworks">Artworks</a>
+                    <a href="#about">About</a>
+                </nav>
+            </header>
+        </div>
+
+        <main>
         </section>
 
-        <hr class="main-divider">
+        <hr class="welcome-divider">
 
         <section id="artworks">
             <h2 class="artworks-title">Our Collected Artworks</h2>
@@ -139,42 +144,40 @@
             <section class="art-category architecture-section">
                 <h2 class="category-title">Architecture</h2>
 
-<article class="artwork architecture">
-        <h2>Bahay sa Kanto</h2>
+<article class="artwork architecture bahay-sa-kanto">
+            <h2>Bahay sa Kanto</h2>
 
-        <figure>
-            <img src="images/photos_architecture_bahay_sa_kanto.jpg"
-                alt="Bahay sa Kanto thumbnail"
-                width="400">
+            <div class="architecture-layout">
+                <div class="architecture-media">
+                    <figure>
+                        <img src="images/photos_architecture_bahay_sa_kanto.jpg"
+                            alt="Bahay sa Kanto thumbnail">
+                    </figure>
 
-            <figcaption>Bahay sa Kanto</figcaption>
-        </figure>
+                    <p class="architecture-caption">Bahay sa Kanto</p>
+                </div>
 
-        <section class="description">
+                <div class="architecture-text">
+                    <section class="description">
+                        <p>
+                            Bahay sa Kanto is a large residential house located on a street corner in San Lorenzo. According to the local residents who live around it, they have recognized the house since the late 1990s, and it became a familiar landmark in the community, often simply referred to as the “Malaking Bahay sa Kanto.” and uses the house as a point of recognition when describing the area.
+                        </p>
+                    </section>
 
-            <p>
-                Bahay sa Kanto is a large residential house located on a street corner in San Lorenzo.
-            </p>
+                    <section class="interpretation">
+                        <p>
+                            The house has a prominent brick-colored exterior combined with white decorative details, black metal gates, balconies, and several covered upper areas. Its roof has a reddish-brown tiled appearance, while the balconies feature curved railings and repeated ornamental designs. The house is surrounded by a stone and concrete fence, making it visually noticeable from the street.
+                        </p>
+                    </section>
 
-        </section>
-
-        <section class="interpretation">
-
-            <p>
-                According to the local residents who live around it, they have recognized the house since the late 1990s, and it became a familiar landmark in the community, often simply referred to as the “Malaking Bahay sa Kanto.” and uses the house as a point of recognition when describing the area. The house has a prominent brick-colored exterior combined with white decorative details, black metal gates, balconies, and several covered upper areas. Its roof has a reddish-brown tiled appearance, while the balconies feature curved railings and repeated ornamental designs. The house is surrounded by a stone and concrete fence, making it visually noticeable from the street.
-
-            </p>
-
-        </section>
-
-        <section class="our-interpretation">
-
-            <p>
-                For us, Bahay sa Kanto is interesting because its appearance makes it easy to understand why it became a recognizable landmark in the community. What stands out to us the most is the amount of detail in the house. The decorative railings, gates, balconies, brick walls, and roof create a design that is much more elaborate than an ordinary house. Even from the street, the building immediately catches attention because of its size and appearance. A member of ours also finds the architecture meaningful because one of his core memories of my childhood was when me and my friends were "namamasko" (“caroling”) to this house. Its family gave a lot of cash and you can feel the spirit of Christmas because of lots of decorations during the Christmas season. And when the new year comes, there are numerous colorful fireworks you can admire. It made him feel nostalgic remembering my childhood and cherish those memories growing up.
-            </p>
-
-        </section>
-    </article>
+                    <section class="our-interpretation">
+                        <p>
+                            For us, Bahay sa Kanto is interesting because its appearance makes it easy to understand why it became a recognizable landmark in the community. What stands out to us the most is the amount of detail in the house. The decorative railings, gates, balconies, brick walls, and roof create a design that is much more elaborate than an ordinary house. Even from the street, the building immediately catches attention because of its size and appearance. A member of ours also finds the architecture meaningful because one of his core memories of my childhood was when me and my friends were "namamasko" (“caroling”) to this house. Its family gave a lot of cash and you can feel the spirit of Christmas because of lots of decorations during the Christmas season. And when the new year comes, there are numerous colorful fireworks you can admire. It made him feel nostalgic remembering my childhood and cherish those memories growing up.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </article>
 
             <hr class="artwork-divider">
 
@@ -439,11 +442,12 @@
     </main>
 
     <footer>
+        <p>&copy; 2026 Arts & Appreciation Blog</p>
 
-        <p>
-            &copy; 2026 Arts & Appreciation Blog
-        </p>
-
+        <nav class="footer-nav">
+            <a href="#home">Home</a>
+            <a href="#artworks">Artworks</a>
+        </nav>
     </footer>
 
     <script>

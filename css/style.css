@@ -9,30 +9,51 @@ body {
     line-height: 1.6;
 }
 
-header {
-    padding: 20px;
-    border-bottom: 1px solid #ddd;
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 80px;
+    margin-bottom: 20px;
 }
 
-nav {
+header {
+    padding: 20px;
+    text-align: left;
+    border-bottom: none;
+}
+
+.top-nav {
     margin-top: 10px;
 }
 
-nav a {
-    margin-left: 15px;
-    margin-right: 0;
+.top-nav a {
+    margin-right: 15px;
     text-decoration: none;
     color: #333;
 }
 
 main {
-    padding: 40px 20px;
+    padding: 0 20px;
 }
 
 footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px;
     border-top: 1px solid #ddd;
     margin-top: 40px;
+}
+
+footer p {
+    text-indent: 0;
+}
+
+.footer-nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
 }
 
 p {
@@ -119,7 +140,10 @@ hr {
 
 .artworks-title {
     text-align: center;
-    margin-bottom: 40px;
+    width: 40%;
+    margin: 0 auto 35px;
+    padding: 24px 0;
+    border-bottom: 1px solid #999;
 }
 
 .art-category {
@@ -127,24 +151,15 @@ hr {
 }
 
 .category-title {
-    text-align: left;
+    text-align: center;
     margin-bottom: 35px;
 }
+
 
 .artwork-divider {
     border: none;
     height: 0;
     margin: 20px 0;
-}
-
-.category-divider {
-    border: none;
-    border-top: 1px solid #999;
-    margin: 50px 0;
-}
-
-.main-divider {
-    margin: 40px 0;
 }
 
 header {
@@ -159,4 +174,65 @@ header {
     display: block;
     border: 2px solid black;
     border-radius: 10px;
+}
+
+#home {
+    width: 520px;
+    padding-top: 20px;
+}
+
+#home h2,
+header h1 {
+    font-size: 1.5em;
+}
+
+#home p {
+    width: 100%;
+    text-align: justify;
+    text-indent: 0;
+}
+
+.architecture-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
+.architecture-media figure {
+    margin: 0;
+}
+
+.architecture-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #333;
+    border-radius: 10px;
+}
+
+.architecture-caption {
+    text-align: center;
+    text-indent: 0;
+    margin-top: 8px;
+}
+
+.welcome-divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+.main-divider {
+    border: none;
+    border-top: 1px solid #999;
+    margin: 50px 0;
+}
+
+#about {
+    margin-top: 0;
+}
+
+.category-divider {
+    margin: 50px 0;
 }
