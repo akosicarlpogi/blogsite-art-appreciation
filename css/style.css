@@ -591,3 +591,7 @@ hr {
         clip-path: inset(0 0 0 0);
     }
 }
+
+#about p {
+    text-indent: 0;
+}
