@@ -9,33 +9,36 @@
 </head>
 
 <body>
-<div class="top-section">
-            <section id="home">
-                <h2>Welcome to Our Arts & Appreciation Blog</h2>
+<section id="welcome-screen" class="welcome-screen">
+    <div class="welcome-content">
+        <h1>Welcome to Our Arts & Appreciation Blog</h1>
 
-                <p>
-                    This blog presents different works of art and our appreciation,
-                    understanding, and interpretation of each work.
-                </p>
-            </section>
+        <p>
+            This blog presents different works of art and our appreciation,
+            understanding, and interpretation of each work.
+        </p>
+    </div>
 
-            <header>
-                <h1>Arts & Appreciation</h1>
+    <button id="proceed-button" class="proceed-button">Proceed to Artworks &gt;&gt;&gt;</button>
+</section>
 
-                <nav class="top-nav">
-                    <a href="#artworks">Artworks</a>
-                    <a href="#about">About</a>
-                </nav>
-            </header>
-        </div>
-
-        <main>
-        </section>
-
-        <hr class="welcome-divider">
+<div id="site-content" class="site-content">
+    <main>
 
         <section id="artworks">
-            <h2 class="artworks-title">Our Collected Artworks</h2>
+            <div class="artworks-topbar">
+                <div class="artworks-title-area">
+                    <h2 class="artworks-title">Our Collected Artworks</h2>
+                </div>
+
+                <div class="artworks-brand">
+                    <h1>Arts & Appreciation</h1>
+
+                    <nav class="artworks-nav">
+                        <a href="#about">About</a>
+                    </nav>
+                </div>
+            </div>
 
             <section class="art-category songs-section">
                 <h2 class="category-title">Songs</h2>
@@ -473,13 +476,14 @@
         <p>&copy; 2026 Arts & Appreciation Blog</p>
 
         <nav class="footer-nav">
-            <a href="#home">Home</a>
+            <a href="#" class="home-return">Home</a>
             <a href="#artworks">Artworks</a>
         </nav>
     </footer>
+</div>
 
     <script>
-            document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+            document.querySelectorAll('nav a[href^="#"]:not(.home-return)').forEach(link => {
                 link.addEventListener("click", function(event) {
                     event.preventDefault();
 
@@ -508,31 +512,264 @@
                 });
             });
         </script>
+<script>
+    const artworks = document.querySelectorAll(".artwork");
+    const welcomeScreen = document.getElementById("welcome-screen");
+    const siteContent = document.getElementById("site-content");
+    const proceedButton = document.getElementById("proceed-button");
+    const homeReturnButtons = document.querySelectorAll(".home-return");
+    const songsTitle = document.querySelector(".songs-section .category-title");
+    const artworksTitleArea = document.querySelector(".artworks-title-area");
 
-        <script>
-        const artworkImages = document.querySelectorAll(".artwork img");
+    const mediaSelector = [
+        ".song-media",
+        ".architecture-media",
+        ".zavalla-house-media",
+        ".sculpture-media",
+        ".literature-media"
+    ].join(",");
 
-        function updateImageColors() {
-            const screenCenter = window.innerHeight / 2;
+    let artworksPageActive = false;
+    let pageTransitioning = false;
 
-            artworkImages.forEach(image => {
-                const rect = image.getBoundingClientRect();
-                const imageCenter = rect.top + rect.height / 2;
-                const distance = Math.abs(imageCenter - screenCenter);
+    function prepareArtworkPositions() {
+        artworks.forEach(artwork => {
+            const media = artwork.querySelector(mediaSelector);
+            const title = artwork.querySelector(":scope > h2");
 
-                if (distance < window.innerHeight * 0.2) {
-                    image.classList.add("in-focus");
+            if (!media || !title) return;
+
+            artwork.classList.add("is-measuring");
+
+            const artworkRect = artwork.getBoundingClientRect();
+            const mediaRect = media.getBoundingClientRect();
+            const titleRect = title.getBoundingClientRect();
+
+            const mediaCenter =
+                artworkRect.left +
+                (artworkRect.width - mediaRect.width) / 2;
+
+            const titleCenter =
+                artworkRect.left +
+                (artworkRect.width - titleRect.width) / 2;
+
+            artwork.style.setProperty(
+                "--media-shift",
+                `${mediaCenter - mediaRect.left}px`
+            );
+
+            artwork.style.setProperty(
+                "--title-shift",
+                `${titleCenter - titleRect.left}px`
+            );
+
+            artwork.classList.remove("is-measuring");
+        });
+    }
+
+    function resetArtworkAnimations() {
+        artworks.forEach(artwork => {
+            artwork.classList.remove("is-active");
+        });
+
+        void siteContent.offsetWidth;
+    }
+
+    function updateArtworkFocus() {
+        if (!artworksPageActive || pageTransitioning) return;
+
+        const screenCenter = window.innerHeight / 2;
+
+        artworks.forEach(artwork => {
+            if (artwork.classList.contains("is-active")) return;
+
+            const media = artwork.querySelector(mediaSelector);
+            if (!media) return;
+
+            const rect = media.getBoundingClientRect();
+            const mediaCenter = rect.top + rect.height / 2;
+            const distance = Math.abs(mediaCenter - screenCenter);
+
+            if (
+                rect.bottom > 0 &&
+                rect.top < window.innerHeight &&
+                distance < window.innerHeight * 0.28
+            ) {
+                artwork.classList.add("is-active");
+            }
+        });
+    }
+
+    function animateScrollTo(target, duration = 1000) {
+        return new Promise(resolve => {
+            const startPosition = window.scrollY;
+            const targetPosition =
+                target.getBoundingClientRect().top +
+                window.scrollY -
+                24;
+
+            const distance = targetPosition - startPosition;
+            let startTime = null;
+
+            function step(currentTime) {
+                if (!startTime) startTime = currentTime;
+
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                const eased =
+                    progress < 0.5
+                        ? 2 * progress * progress
+                        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+                window.scrollTo(
+                    0,
+                    startPosition + distance * eased
+                );
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
                 } else {
-                    image.classList.remove("in-focus");
+                    resolve();
                 }
+            }
+
+            requestAnimationFrame(step);
+        });
+    }
+
+    function calculateIntroTitleShift() {
+        const rect = artworksTitleArea.getBoundingClientRect();
+        const titleCenter = rect.top + rect.height / 2;
+        const screenCenter = window.innerHeight / 2;
+
+        siteContent.style.setProperty(
+            "--intro-title-shift",
+            `${screenCenter - titleCenter}px`
+        );
+    }
+
+    function showArtworksPage() {
+        if (pageTransitioning) return;
+
+        pageTransitioning = true;
+        artworksPageActive = false;
+
+        resetArtworkAnimations();
+        window.scrollTo(0, 0);
+
+        siteContent.classList.remove(
+            "is-visible",
+            "is-leaving-home",
+            "intro-hold",
+            "intro-settle"
+        );
+
+        siteContent.classList.add("is-preparing");
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                prepareArtworkPositions();
+
+                welcomeScreen.classList.remove(
+                    "is-away",
+                    "is-returning"
+                );
+                welcomeScreen.classList.add("is-leaving");
+
+                setTimeout(() => {
+                    welcomeScreen.classList.remove("is-leaving");
+                    welcomeScreen.classList.add("is-away");
+
+                    siteContent.classList.remove("is-preparing");
+                    siteContent.classList.add(
+                        "is-visible",
+                        "intro-hold"
+                    );
+
+                    window.scrollTo(0, 0);
+
+                    requestAnimationFrame(() => {
+                        calculateIntroTitleShift();
+                        void siteContent.offsetWidth;
+
+                        setTimeout(() => {
+                            siteContent.classList.remove("intro-hold");
+                            siteContent.classList.add("intro-settle");
+
+                            setTimeout(async () => {
+                                siteContent.classList.remove("intro-settle");
+
+                                await animateScrollTo(
+                                    songsTitle,
+                                    1000
+                                );
+
+                                artworksPageActive = true;
+                                pageTransitioning = false;
+                            }, 1000);
+                        }, 1000);
+                    });
+                }, 1000);
             });
-        }
+        });
+    }
 
-        window.addEventListener("scroll", updateImageColors);
-        window.addEventListener("resize", updateImageColors);
+    function showWelcomePage() {
+        if (pageTransitioning) return;
 
-        updateImageColors();
-    </script>
+        pageTransitioning = true;
+        artworksPageActive = false;
+
+        siteContent.classList.remove(
+            "intro-hold",
+            "intro-settle"
+        );
+        siteContent.classList.add("is-leaving-home");
+
+        welcomeScreen.classList.remove(
+            "is-away",
+            "is-leaving"
+        );
+        welcomeScreen.classList.add("is-returning");
+
+        setTimeout(() => {
+            siteContent.classList.remove(
+                "is-visible",
+                "is-leaving-home"
+            );
+
+            resetArtworkAnimations();
+
+            welcomeScreen.classList.remove("is-returning");
+
+            window.scrollTo(0, 0);
+            pageTransitioning = false;
+        }, 1000);
+    }
+
+    proceedButton.addEventListener(
+        "click",
+        showArtworksPage
+    );
+
+    homeReturnButtons.forEach(button => {
+        button.addEventListener("click", event => {
+            event.preventDefault();
+            showWelcomePage();
+        });
+    });
+
+    window.addEventListener(
+        "scroll",
+        updateArtworkFocus
+    );
+
+    window.addEventListener("resize", () => {
+        if (!artworksPageActive || pageTransitioning) return;
+        prepareArtworkPositions();
+    });
+</script>
 
 </body>
 </html>
