@@ -14,8 +14,7 @@
         <h1>Welcome to Our Arts & Appreciation Blog</h1>
 
         <p>
-            This blog presents different works of art and our appreciation,
-            understanding, and interpretation of each work.
+        Explore a collection of artworks through our appreciation, understanding, and personal interpretations of each piece.
         </p>
     </div>
 
@@ -35,6 +34,7 @@
                     <h1>Arts & Appreciation</h1>
 
                     <nav class="artworks-nav">
+                        <a href="#" class="home-return">Home</a>
                         <a href="#about">About</a>
                     </nav>
                 </div>
@@ -671,6 +671,11 @@
             requestAnimationFrame(() => {
                 prepareArtworkPositions();
 
+                siteContent.style.removeProperty("--intro-title-shift");
+                calculateIntroTitleShift();
+
+                siteContent.classList.add("intro-hold");
+
                 welcomeScreen.classList.remove(
                     "is-away",
                     "is-returning"
@@ -682,34 +687,32 @@
                     welcomeScreen.classList.add("is-away");
 
                     siteContent.classList.remove("is-preparing");
-                    siteContent.classList.add(
-                        "is-visible",
-                        "intro-hold"
-                    );
+                    siteContent.classList.add("is-visible");
 
                     window.scrollTo(0, 0);
 
-                    requestAnimationFrame(() => {
-                        calculateIntroTitleShift();
-                        void siteContent.offsetWidth;
+                    setTimeout(() => {
+                        siteContent.classList.remove("intro-hold");
+                        siteContent.classList.add("intro-settle");
 
-                        setTimeout(() => {
-                            siteContent.classList.remove("intro-hold");
-                            siteContent.classList.add("intro-settle");
+                        setTimeout(async () => {
+                            siteContent.classList.remove("intro-settle");
 
-                            setTimeout(async () => {
-                                siteContent.classList.remove("intro-settle");
+                            await animateScrollTo(
+                                songsTitle,
+                                1000
+                            );
 
-                                await animateScrollTo(
-                                    songsTitle,
-                                    1000
-                                );
+                            artworksPageActive = true;
+                            pageTransitioning = false;
 
-                                artworksPageActive = true;
-                                pageTransitioning = false;
-                            }, 1000);
+                            const firstArtwork = artworks[0];
+
+                            requestAnimationFrame(() => {
+                                firstArtwork.classList.add("is-active");
+                            });
                         }, 1000);
-                    });
+                    }, 1000);
                 }, 1000);
             });
         });

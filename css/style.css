@@ -74,7 +74,7 @@ body {
 }
 
 .welcome-content p {
-    text-align: justify;
+    text-align: center;
     text-indent: 0;
 }
 
@@ -134,6 +134,11 @@ body {
 .site-content.is-leaving-home {
     animation: site-fade-out 1s ease forwards;
     pointer-events: none;
+}
+
+
+.site-content.is-preparing.intro-hold .artworks-title-area {
+    transition: none !important;
 }
 
 .site-content.intro-hold .artworks-title-area {
@@ -212,6 +217,7 @@ body {
 }
 
 .artworks-nav a {
+    margin-left: 15px;
     text-decoration: none;
     color: #333;
 }
