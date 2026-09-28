@@ -297,3 +297,77 @@ header h1 {
     display: block;
     clear: both;
 }
+
+.sculpture-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
+.sculpture-right .sculpture-layout {
+    grid-template-columns: 1fr 400px;
+}
+
+.sculpture-media {
+    width: 100%;
+}
+
+.sculpture-media figure {
+    margin: 0;
+}
+
+.sculpture-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #333;
+    border-radius: 10px;
+}
+
+.sculpture-caption {
+    text-align: center;
+    text-indent: 0;
+    margin-top: 8px;
+}
+
+.sculpture-text {
+    width: 100%;
+}
+
+.literature-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
+.literature-right .literature-layout {
+    grid-template-columns: 1fr 400px;
+}
+
+.literature-media {
+    width: 100%;
+}
+
+.literature-media figure {
+    margin: 0;
+}
+
+.literature-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #333;
+    border-radius: 10px;
+}
+
+.literature-caption {
+    text-align: center;
+    text-indent: 0;
+    margin-top: 8px;
+}
+
+.literature-text {
+    width: 100%;
+}
