@@ -181,48 +181,48 @@
 
             <hr class="artwork-divider">
 
-<article class="artwork architecture">
-        <h2>Zavalla House</h2>
+<article class="artwork architecture zavalla-ancestral-house">
+    <h2>Zavalla Ancestral House</h2>
 
-        <figure>
-            <img src="images/photos_architecture_zavalla_house.jpg"
-                alt="Zavalla House thumbnail"
-                width="400">
+    <div class="zavalla-layout">
+        <div class="zavalla-house-media">
+            <figure>
+                <img src="images/photos_architecture_zavalla_ancestral_house.jpg"
+                    alt="Zavalla Ancestral House thumbnail">
+            </figure>
 
-            <figcaption>Zavalla House</figcaption>
-        </figure>
+            <p class="architecture-caption">Zavalla Ancestral House</p>
+        </div>
 
-        <figure>
-            <img src="images/photos_architecture_zavalla_house_owner.jpg"
-                alt="Zavalla House's owner thumbnail"
-                width="400">
+        <div class="zavalla-content">
+            <div class="zavalla-owner">
+                <figure>
+                    <img src="images/photos_architecture_zavalla_ancestral_house_owner.jpg"
+                        alt="Andres B. Zavalla">
+                </figure>
 
-            <figcaption>Zavalla House's Owner</figcaption>
-        </figure>
+                <p class="architecture-caption">Andres B. Zavalla</p>
+            </div>
 
-        <section class="description">
+            <section class="description">
+                <p>
+                    The Zavalla Ancestral House, also known as the Andres B. Zavalla House, is an old ancestral house situated in Barangay Kanluran, near the McDonald’s in Brgy. Kanluran, Santa Rosa City. The house was once the residence of Don Andres Barroma Zavalla, who served as the town head for the longest period during the Spanish period.
+                </p>
+            </section>
 
-            <p>
-                The Zavalla House, also known as the Andres B. Zavalla House, is an old ancestral house situated in Barangay Kanluran, near the McDonald’s in Brgy. Kanluran, Santa Rosa City. The house was once the residence of Don Andres Barroma Zavalla, who served as the town head for the longest period during the Spanish period.
-            </p>
+            <section class="interpretation">
+                <p>
+                    The house has a large, traditional structure with a wide, steeply sloped roof made of weathered metal sheets. Its upper floor features wooden walls and many windows with detailed lattice-like panels, while the lower floor is made mostly of stone and concrete. The house also has traditional wooden and metal elements that give it an aged appearance.
+                </p>
+            </section>
 
-        </section>
-
-        <section class="interpretation">
-
-            <p>
-                The house has a large, traditional structure with a wide, steeply sloped roof made of weathered metal sheets. Its upper floor features wooden walls and many windows with detailed lattice-like panels, while the lower floor is made mostly of stone and concrete. The house also has traditional wooden and metal elements that give it an aged appearance.
-            </p>
-
-        </section>
-
-        <section class="our-interpretation">
-
-            <p>
-                The Zavalla House displays characteristics of traditional Filipino ancestral architecture, back in the day Bahay Kubo is commonly found in Filipino houses, so  when you have a house that is made of stone and concrete, people respect you and treat you as a prominent person in the town. Today, a lot of houses are made of stone and concrete including ours too. So it made us feel proud of what we have because according to the history, only rich people can afford it but now we can afford it to and upon writing this article there's a lot of things we should be thankful.
-            </p>
-
-        </section>
+            <section class="our-interpretation">
+                <p>
+                    The Zavalla Ancestral House displays characteristics of traditional Filipino ancestral architecture, back in the day Bahay Kubo is commonly found in Filipino houses, so  when you have a house that is made of stone and concrete, people respect you and treat you as a prominent person in the town. Today, a lot of houses are made of stone and concrete including ours too. So it made us feel proud of what we have because according to the history, only rich people can afford it but now we can afford it to and upon writing this article there's a lot of things we should be thankful.
+                </p>
+            </section>
+        </div>
+    </div>
 </article>
             </section>
 
@@ -451,34 +451,59 @@
     </footer>
 
     <script>
-        document.querySelectorAll('nav a[href^="#"]').forEach(link => {
-            link.addEventListener("click", function(event) {
-                event.preventDefault();
+            document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
 
-                const target = document.querySelector(this.getAttribute("href"));
-                const startPosition = window.scrollY;
-                const targetPosition = target.getBoundingClientRect().top + window.scrollY;
-                const distance = targetPosition - startPosition;
-                const duration = 1000;
-                let startTime = null;
+                    const target = document.querySelector(this.getAttribute("href"));
+                    const startPosition = window.scrollY;
+                    const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+                    const distance = targetPosition - startPosition;
+                    const duration = 1000;
+                    let startTime = null;
 
-                function scrollAnimation(currentTime) {
-                    if (!startTime) startTime = currentTime;
+                    function scrollAnimation(currentTime) {
+                        if (!startTime) startTime = currentTime;
 
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const acceleration = progress * progress * progress;
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const acceleration = progress * progress * progress;
 
-                    window.scrollTo(0, startPosition + distance * acceleration);
+                        window.scrollTo(0, startPosition + distance * acceleration);
 
-                    if (progress < 1) {
-                        requestAnimationFrame(scrollAnimation);
+                        if (progress < 1) {
+                            requestAnimationFrame(scrollAnimation);
+                        }
                     }
-                }
 
-                requestAnimationFrame(scrollAnimation);
+                    requestAnimationFrame(scrollAnimation);
+                });
             });
-        });
+        </script>
+
+        <script>
+        const artworkImages = document.querySelectorAll(".artwork img");
+
+        function updateImageColors() {
+            const screenCenter = window.innerHeight / 2;
+
+            artworkImages.forEach(image => {
+                const rect = image.getBoundingClientRect();
+                const imageCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(imageCenter - screenCenter);
+
+                if (distance < window.innerHeight * 0.2) {
+                    image.classList.add("in-focus");
+                } else {
+                    image.classList.remove("in-focus");
+                }
+            });
+        }
+
+        window.addEventListener("scroll", updateImageColors);
+        window.addEventListener("resize", updateImageColors);
+
+        updateImageColors();
     </script>
 
 </body>

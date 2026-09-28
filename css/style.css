@@ -236,3 +236,64 @@ header h1 {
 .category-divider {
     margin: 50px 0;
 }
+
+.artwork img {
+    filter: grayscale(100%);
+    transition: filter 0.6s ease;
+}
+
+.artwork img.in-focus {
+    filter: grayscale(0%);
+}
+
+.zavalla-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
+.zavalla-house-media figure,
+.zavalla-owner figure {
+    margin: 0;
+}
+
+.zavalla-house-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #333;
+    border-radius: 10px;
+}
+
+.zavalla-content {
+    width: 100%;
+}
+
+.zavalla-owner {
+    float: right;
+    width: 38%;
+    margin-left: 35px;
+    margin-bottom: 20px;
+}
+
+.zavalla-owner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #333;
+    border-radius: 10px;
+}
+
+.zavalla-owner .architecture-caption,
+.zavalla-house-media .architecture-caption {
+    text-align: center;
+    text-indent: 0;
+    margin-top: 8px;
+}
+
+.zavalla-content::after {
+    content: "";
+    display: block;
+    clear: both;
+}
