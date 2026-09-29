@@ -1,0 +1,433 @@
+/* ============================================================
+   Arts & Appreciation — "Warm Archival Journal" theme
+   Load AFTER css/style.css. Does not modify style.css;
+   only adds/overrides. Safe to remove by deleting this <link>.
+   ============================================================ */
+
+/* ---------- Fonts (self-hosted, offline-safe) ---------- */
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-500-normal.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-600-normal.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-700-normal.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-400-italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-500-italic.woff2') format('woff2');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Lora';
+    src: url('../fonts/lora-latin-600-italic.woff2') format('woff2');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* ---------- Tokens ---------- */
+:root {
+    --paper: #f1ead9;
+    --paper-deep: #e6dcc2;
+    --paper-shadow: rgba(46, 36, 20, 0.16);
+    --ink: #241f18;
+    --ink-soft: #5b5142;
+    --ink-blue: #2c3e5c;
+    --ink-blue-deep: #1b2a41;
+    --cover-cloth: #2a2018;
+    --cover-cloth-deep: #180f0a;
+    --cover-emboss: #cdb98c;
+    --tape: rgba(203, 171, 107, 0.55);
+    --serif: 'Lora', Georgia, 'Times New Roman', serif;
+
+    /* subtle fibrous grain, tiled */
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.11 0 0 0 0 0.08 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+    /* small fleuron ornament, tiled down the page margins only */
+    --margin-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='220'%3E%3Ctext x='35' y='60' font-size='30' font-family='Georgia, serif' fill='%232c3e5c' fill-opacity='0.15' text-anchor='middle' transform='rotate(-6 35 60)'%3E%26%2310086;%3C/text%3E%3Ctext x='35' y='175' font-size='22' font-family='Georgia, serif' fill='%232c3e5c' fill-opacity='0.12' text-anchor='middle' transform='rotate(5 35 175)'%3E%26%2310086;%3C/text%3E%3C/svg%3E");
+}
+
+/* the true page background (outside body's own margin) — was left
+   as browser-default white before, which is what made the margins
+   look bare against the cream content */
+html {
+    min-height: 100%;
+    background-color: var(--paper);
+    background-image: var(--grain), var(--margin-motif), var(--margin-motif);
+    background-repeat: repeat, repeat-y, repeat-y;
+    background-position: 0 0, 22px 40px, right 22px top 40px;
+    background-size: auto, 70px 220px, 70px 220px;
+}
+
+/* ---------- Base ---------- */
+body {
+    font-family: var(--serif);
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: var(--grain);
+}
+
+h1, h2 {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.artworks-brand h1 {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.artworks-nav a,
+.footer-nav a {
+    color: var(--ink-blue-deep);
+    font-weight: 500;
+}
+
+.artworks-nav a:hover,
+.footer-nav a:hover,
+.home-return:hover {
+    color: var(--ink-blue);
+}
+
+.artworks-title {
+    border-bottom: 1px solid var(--ink-soft);
+}
+
+.main-divider,
+footer {
+    border-color: var(--ink-soft);
+}
+
+/* soft page shadow around the whole sheet of content */
+.site-content {
+    background: var(--paper);
+    box-shadow: 0 0 60px var(--paper-shadow) inset;
+}
+
+/* ---------- Welcome screen -> journal cover ---------- */
+.welcome-screen {
+    background:
+        var(--grain),
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 5px),
+        linear-gradient(160deg, var(--cover-cloth) 0%, var(--cover-cloth-deep) 100%);
+    box-shadow: inset 0 0 140px rgba(0,0,0,0.55);
+}
+
+.welcome-content {
+    padding: 46px 54px;
+    border: 1px solid rgba(205, 185, 140, 0.35);
+    position: relative;
+}
+
+.welcome-content::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(205, 185, 140, 0.2);
+    pointer-events: none;
+}
+
+.welcome-content h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    color: var(--cover-emboss);
+    text-shadow:
+        0 1px 0 rgba(255,255,255,0.06),
+        0 -1px 1px rgba(0,0,0,0.65);
+    letter-spacing: 0.015em;
+}
+
+.welcome-content p {
+    color: rgba(205, 190, 160, 0.82);
+}
+
+.proceed-button {
+    color: var(--cover-emboss);
+    font-style: italic;
+    letter-spacing: 0.02em;
+}
+
+.proceed-button:hover {
+    opacity: 0.75;
+}
+
+/* ---------- Category titles -> stamped labels ---------- */
+.category-title {
+    display: inline-block;
+    position: relative;
+    margin: 0 auto 35px;
+    padding: 7px 22px;
+    color: var(--ink-blue-deep);
+    border: 2px solid var(--ink-blue-deep);
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.95em;
+    transform: rotate(-1deg);
+    mix-blend-mode: multiply;
+    opacity: 0.88;
+}
+
+.category-title::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px dashed var(--ink-blue-deep);
+    border-radius: 2px;
+    opacity: 0.6;
+}
+
+.art-category {
+    text-align: center;
+}
+
+.art-category > .artwork,
+.art-category > article {
+    text-align: left;
+}
+
+/* plate numbering — archival cataloguing, resets per category */
+.art-category {
+    counter-reset: plate;
+}
+
+.artwork {
+    counter-increment: plate;
+}
+
+.artwork > h2::after {
+    content: " \2014 Plate " counter(plate, decimal-leading-zero);
+    font-size: 0.5em;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-blue);
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+}
+
+/* ---------- Photo prints: tilt + tape ---------- */
+.song-media figure,
+.architecture-media figure,
+.zavalla-house-media figure,
+.sculpture-media figure,
+.literature-media figure {
+    position: relative;
+    transform: rotate(-1.4deg);
+    background: #fff;
+    padding: 10px 10px 0;
+    box-shadow: 0 10px 22px var(--paper-shadow);
+}
+
+.ikigai .song-media figure,
+.sculpture-right .sculpture-media figure,
+.literature-right .literature-media figure {
+    transform: rotate(1.4deg);
+}
+
+.song-media img,
+.architecture-media img,
+.zavalla-house-media img,
+.sculpture-media img,
+.literature-media img {
+    border: none !important;
+    border-radius: 0 !important;
+    display: block;
+}
+
+figure::before {
+    content: "";
+    position: absolute;
+    top: -13px;
+    left: 22px;
+    width: 64px;
+    height: 24px;
+    background: var(--tape) repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 3px, transparent 3px 6px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    transform: rotate(-6deg);
+    opacity: 0.9;
+}
+
+.ikigai figure::before,
+.sculpture-right figure::before,
+.literature-right figure::before {
+    left: auto;
+    right: 22px;
+    transform: rotate(6deg);
+}
+
+.zavalla-owner figure {
+    position: relative;
+    transform: rotate(1.2deg);
+}
+
+/* ---------- Text blocks ---------- */
+.artist {
+    font-style: italic;
+    color: var(--ink-soft);
+}
+
+.description p,
+.interpretation p {
+    color: var(--ink);
+}
+
+/* "Our Interpretation" -> margin note */
+.our-interpretation {
+    clear: both;
+    position: relative;
+    background: var(--paper-deep);
+    border-left: 3px solid var(--ink-blue);
+    padding: 14px 18px;
+    margin-top: 14px;
+    transform: rotate(-0.35deg);
+    box-shadow: 3px 4px 8px var(--paper-shadow);
+}
+
+.our-interpretation::before {
+    content: "Our note";
+    display: block;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.8em;
+    color: var(--ink-blue-deep);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+}
+
+.our-interpretation p {
+    text-indent: 0;
+}
+
+/* ---------- Audio player -> paper ticket ---------- */
+.audio-player {
+    position: relative;
+    background: var(--paper-deep);
+    border: 1px dashed var(--ink-soft);
+    border-radius: 3px;
+    padding: 12px 16px 10px;
+}
+
+.audio-player::before {
+    content: "\266A  Track";
+    display: block;
+    font-size: 0.72em;
+    font-style: italic;
+    color: var(--ink-blue-deep);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+}
+
+.audio-player::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow:
+        inset 0 1px 2px rgba(0,0,0,0.15),
+        7px 0 0 0 transparent;
+    transform: translateY(-50%);
+}
+
+audio {
+    filter: sepia(8%) saturate(115%) contrast(102%);
+}
+
+/* ---------- Ribbon bookmark (lives on the cover only) ---------- */
+.ribbon-bookmark {
+    position: absolute;
+    top: 0;
+    right: 12%;
+    width: 24px;
+    height: 96px;
+    background: linear-gradient(180deg, var(--ink-blue) 0%, var(--ink-blue-deep) 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 84%, 50% 100%, 0 84%);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* ---------- About / footer ---------- */
+#about {
+    font-style: italic;
+    color: var(--ink-soft);
+    position: relative;
+}
+
+footer p {
+    color: var(--ink-soft);
+}
+
+/* ---------- Ink stains (ephemera, used sparingly) ---------- */
+/* one blot behind the site brand, one near the about section —
+   kept faint and few, so the page still reads as calm, not busy. */
+.artworks-brand {
+    position: relative;
+}
+
+.artworks-brand::before {
+    content: "";
+    position: absolute;
+    top: -18px;
+    right: -26px;
+    width: 70px;
+    height: 54px;
+    background:
+        radial-gradient(ellipse at 30% 40%, var(--ink-blue-deep) 0%, transparent 60%),
+        radial-gradient(ellipse at 65% 60%, var(--ink-blue-deep) 0%, transparent 55%);
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: -1;
+}
+
+#about h2 {
+    position: relative;
+    display: inline-block;
+}
+
+#about h2::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: -34px;
+    width: 46px;
+    height: 36px;
+    background:
+        radial-gradient(ellipse at 35% 35%, var(--ink) 0%, transparent 58%),
+        radial-gradient(ellipse at 65% 65%, var(--ink) 0%, transparent 50%);
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+}
