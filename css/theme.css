@@ -530,3 +530,17 @@ footer p {
 
     background: url("../images/down.png") center / contain no-repeat;
 }
+
+#about {
+    text-align: center;
+}
+
+#about h2,
+#about p {
+    text-align: center;
+}
+
+#about p {
+    text-indent: 0;
+}
+

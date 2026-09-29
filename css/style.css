@@ -595,3 +595,15 @@ hr {
 #about p {
     text-indent: 0;
 }
+
+.about-names {
+    margin-top: 14px;
+}
+
+.about-names p {
+    margin: 0;
+}
+
+.about-section {
+    margin-top: 14px;
+}
