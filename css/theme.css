@@ -489,7 +489,12 @@ footer p {
     width: 360px;
     height: 72px;
     margin: -2px auto 0;
-    background: url("../images/ornamental-divider.png") center / 360px 72px no-repeat;
+
+    background-image: url("../images/ornamental-divider.png");
+    background-size: 360px 72px;
+    background-repeat: no-repeat;
+    background-position: calc(50% - 10px) center;
+
     opacity: 0.88;
 }
 
