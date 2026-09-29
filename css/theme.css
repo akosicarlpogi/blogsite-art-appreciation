@@ -493,3 +493,40 @@ footer p {
     opacity: 0.88;
 }
 
+.category-divider,
+.main-divider {
+    position: relative;
+    overflow: visible;
+    border: none;
+    border-top: 1px solid #000;
+}
+
+.category-divider::before,
+.category-divider::after,
+.main-divider::before,
+.main-divider::after {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: block;
+}
+
+.category-divider::before,
+.main-divider::before {
+    content: "";
+    width: 720px;
+    height: 80px;
+    bottom: -32px;
+
+    background: url("../images/up.png") center / contain no-repeat;
+}
+
+.category-divider::after,
+.main-divider::after {
+    content: "";
+    width: 720px;
+    height: 80px;
+    top: -32px;
+
+    background: url("../images/down.png") center / contain no-repeat;
+}
