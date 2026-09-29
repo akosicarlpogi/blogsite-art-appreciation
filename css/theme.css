@@ -72,6 +72,21 @@
 
     /* subtle fibrous grain, tiled */
     --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.13 0 0 0 0 0.11 0 0 0 0 0.08 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+    /* small fleuron ornament, tiled down the page margins only */
+    --margin-motif: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='220'%3E%3Ctext x='35' y='60' font-size='30' font-family='Georgia, serif' fill='%232c3e5c' fill-opacity='0.15' text-anchor='middle' transform='rotate(-6 35 60)'%3E%26%2310086;%3C/text%3E%3Ctext x='35' y='175' font-size='22' font-family='Georgia, serif' fill='%232c3e5c' fill-opacity='0.12' text-anchor='middle' transform='rotate(5 35 175)'%3E%26%2310086;%3C/text%3E%3C/svg%3E");
+}
+
+/* the true page background (outside body's own margin) — was left
+   as browser-default white before, which is what made the margins
+   look bare against the cream content */
+html {
+    min-height: 100%;
+    background-color: var(--paper);
+    background-image: var(--grain), var(--margin-motif), var(--margin-motif);
+    background-repeat: repeat, repeat-y, repeat-y;
+    background-position: 0 0, 22px 40px, right 22px top 40px;
+    background-size: auto, 70px 220px, 70px 220px;
 }
 
 /* ---------- Base ---------- */
@@ -271,6 +286,7 @@ figure::before {
 }
 
 .zavalla-owner figure {
+    position: relative;
     transform: rotate(1.2deg);
 }
 
@@ -349,23 +365,16 @@ audio {
     filter: sepia(8%) saturate(115%) contrast(102%);
 }
 
-/* ---------- Ribbon bookmark ---------- */
+/* ---------- Ribbon bookmark (lives on the cover only) ---------- */
 .ribbon-bookmark {
-    position: fixed;
+    position: absolute;
     top: 0;
-    right: 6%;
+    right: 12%;
     width: 24px;
-    height: 100px;
+    height: 96px;
     background: linear-gradient(180deg, var(--ink-blue) 0%, var(--ink-blue-deep) 100%);
     clip-path: polygon(0 0, 100% 0, 100% 84%, 50% 100%, 0 84%);
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    z-index: 500;
-    pointer-events: none;
-}
-
-.site-content:not(.is-visible) ~ .ribbon-bookmark,
-.welcome-screen:not(.is-away) ~ .ribbon-bookmark {
-    opacity: 0;
 }
 
 /* ---------- About / footer ---------- */
