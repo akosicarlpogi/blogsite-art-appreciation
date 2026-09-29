@@ -303,6 +303,7 @@ figure::before {
 
 /* "Our Interpretation" -> margin note */
 .our-interpretation {
+    clear: both;
     position: relative;
     background: var(--paper-deep);
     border-left: 3px solid var(--ink-blue);
