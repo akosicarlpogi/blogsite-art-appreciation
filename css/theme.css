@@ -544,3 +544,7 @@ footer p {
     text-indent: 0;
 }
 
+.category-title {
+    transform: none;
+}
+
