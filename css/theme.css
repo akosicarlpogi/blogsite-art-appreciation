@@ -548,3 +548,11 @@ footer p {
     transform: none;
 }
 
+.welcome-content {
+    width: 820px;
+    max-width: 90vw;
+}
+
+.welcome-content h1 {
+    white-space: nowrap;
+}
