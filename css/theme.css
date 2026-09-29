@@ -141,6 +141,7 @@ footer {
         repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 5px),
         linear-gradient(160deg, var(--cover-cloth) 0%, var(--cover-cloth-deep) 100%);
     box-shadow: inset 0 0 140px rgba(0,0,0,0.55);
+    overflow: hidden;
 }
 
 .welcome-content {
@@ -172,9 +173,60 @@ footer {
 }
 
 .proceed-button {
+    position: absolute;
+    right: -55px;
+    bottom: 48px;
+
+    width: 330px;
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 38px 0 52px;
+
+    background: linear-gradient(
+        180deg,
+        var(--ink-blue) 0%,
+        var(--ink-blue-deep) 100%
+    );
+
     color: var(--cover-emboss);
+
+    border: none;
+
+    clip-path: polygon(
+        0 50%,
+        14% 0,
+        100% 0,
+        100% 100%,
+        14% 100%
+    );
+
+    box-shadow:
+        -4px 4px 10px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    font-family: var(--serif);
     font-style: italic;
-    letter-spacing: 0.02em;
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+}
+
+.proceed-button:hover {
+    transform: translateX(-10px);
+    filter: brightness(1.12);
+}
+
+.proceed-button:hover {
+    transform: translateY(-8px);
+    filter: brightness(1.12);
 }
 
 .proceed-button:hover {
@@ -368,14 +420,7 @@ audio {
 
 /* ---------- Ribbon bookmark (lives on the cover only) ---------- */
 .ribbon-bookmark {
-    position: absolute;
-    top: 0;
-    right: 12%;
-    width: 24px;
-    height: 96px;
-    background: linear-gradient(180deg, var(--ink-blue) 0%, var(--ink-blue-deep) 100%);
-    clip-path: polygon(0 0, 100% 0, 100% 84%, 50% 100%, 0 84%);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    display: none;
 }
 
 /* ---------- About / footer ---------- */
@@ -431,3 +476,20 @@ footer p {
     mix-blend-mode: multiply;
     pointer-events: none;
 }
+
+/* ---------- Ornamental divider below Our Collected Artworks ---------- */
+.artworks-title {
+    border-bottom: none;
+    padding-bottom: 4px;
+}
+
+.artworks-title-area::after {
+    content: "";
+    display: block;
+    width: 360px;
+    height: 72px;
+    margin: -2px auto 0;
+    background: url("../images/ornamental-divider.png") center / 360px 72px no-repeat;
+    opacity: 0.88;
+}
+
