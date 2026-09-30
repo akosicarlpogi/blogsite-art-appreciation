@@ -581,8 +581,8 @@ footer p {
     position: absolute;
     top: 0;
     left: 0;
-    width: 220px;
-    height: 220px;
+    width: 280px;
+    height: 280px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     pointer-events: none;
     z-index: 1;
@@ -596,8 +596,8 @@ footer p {
     position: absolute;
     top: 0;
     right: 0;
-    width: 220px;
-    height: 220px;
+    width: 280px;
+    height: 280px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     transform: scaleX(-1);
     transform-origin: center;
@@ -640,8 +640,8 @@ footer::before {
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 220px;
-    height: 220px;
+    width: 280px;
+    height: 280px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     transform: scaleY(-1);
     transform-origin: center;
@@ -655,8 +655,8 @@ footer::after {
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 220px;
-    height: 220px;
+    width: 280px;
+    height: 280px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     transform: scale(-1, -1);
     transform-origin: center;
