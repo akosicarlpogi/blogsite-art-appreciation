@@ -55,16 +55,23 @@
 
                 <div class="song-layout">
                     <div class="song-media">
-                        <figure>
-                            <img src="images/photos_songs_bawat_araw.png"
-                                alt="Bawat Araw song thumbnail">
-                        </figure>
+                        <div class="vinyl-sleeve" data-track="bawat-araw">
+                            <div class="vinyl-disc" draggable="true" data-track="bawat-araw" data-title="Bawat Araw — Samantha De Leon"></div>
+                            <figure>
+                                <img src="images/photos_songs_bawat_araw.png"
+                                    alt="Bawat Araw song thumbnail">
+                            </figure>
+                        </div>
 
-                        <div class="audio-player">
-                            <audio controls preload="metadata" controlsList="nodownload">
-                                <source src="songs/songs_bawat_araw.mp3" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
+                        <div class="ticket-drawer">
+                            <button type="button" class="ticket-tab" aria-expanded="false">Backup player</button>
+
+                            <div class="audio-player">
+                                <audio controls preload="metadata" controlsList="nodownload" data-track="bawat-araw">
+                                    <source src="songs/songs_bawat_araw.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
                         </div>
 
                         <p class="song-caption">Bawat Araw</p>
@@ -96,6 +103,15 @@
 
             <hr class="artwork-divider">
 
+            <div class="turntable" id="turntable">
+                <div class="turntable-body">
+                    <div class="turntable-platter"></div>
+                    <div class="turntable-arm" draggable="true"></div>
+                </div>
+                <p class="turntable-hint">Drag a record here to play it</p>
+                <p class="turntable-now-playing"></p>
+            </div>
+
 <article class="artwork song ikigai">
                 <h2>Ikigai</h2>
 
@@ -125,16 +141,23 @@
                     </div>
 
                     <div class="song-media">
-                        <figure>
-                            <img src="images/photos_songs_ikigai.png"
-                                alt="Ikigai song thumbnail">
-                        </figure>
+                        <div class="vinyl-sleeve ikigai" data-track="ikigai">
+                            <div class="vinyl-disc" draggable="true" data-track="ikigai" data-title="Ikigai — Oreh, Yuan &amp; Big J"></div>
+                            <figure>
+                                <img src="images/photos_songs_ikigai.png"
+                                    alt="Ikigai song thumbnail">
+                            </figure>
+                        </div>
 
-                        <div class="audio-player">
-                            <audio controls preload="metadata" controlsList="nodownload">
-                                <source src="songs/songs_ikigai.mp3" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
+                        <div class="ticket-drawer">
+                            <button type="button" class="ticket-tab" aria-expanded="false">Backup player</button>
+
+                            <div class="audio-player">
+                                <audio controls preload="metadata" controlsList="nodownload" data-track="ikigai">
+                                    <source src="songs/songs_ikigai.mp3" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
                         </div>
 
                         <p class="song-caption">Ikigai</p>
@@ -143,6 +166,7 @@
                     </div>
                 </div>
             </article>
+
             </section>
 
             <hr class="category-divider">
@@ -784,6 +808,157 @@
         if (!artworksPageActive || pageTransitioning) return;
         prepareArtworkPositions();
     });
+</script>
+
+<script>
+    // Vinyl sleeves, shared turntable, backup ticket drawers (Songs only)
+    (function () {
+        const turntable = document.getElementById("turntable");
+        if (!turntable) return;
+
+        const nowPlayingLabel = turntable.querySelector(".turntable-now-playing");
+        const turntableArm = turntable.querySelector(".turntable-arm");
+        const sleeves = document.querySelectorAll(".vinyl-sleeve");
+        const discs = document.querySelectorAll(".vinyl-disc");
+        const audios = document.querySelectorAll("audio[data-track]");
+
+        function getAudioByTrack(track) {
+            return document.querySelector(`audio[data-track="${track}"]`);
+        }
+
+        function getDiscByTrack(track) {
+            return document.querySelector(`.vinyl-disc[data-track="${track}"]`);
+        }
+
+        function stopAllAudioExcept(track) {
+            audios.forEach(audio => {
+                if (audio.dataset.track !== track && !audio.paused) {
+                    audio.pause();
+                }
+            });
+        }
+
+        // Click a sleeve to peek the disc out from behind the cover art
+        sleeves.forEach(sleeve => {
+            sleeve.addEventListener("click", () => {
+                sleeve.classList.toggle("is-peeking");
+            });
+        });
+
+        // Dragging the disc itself shouldn't also toggle the sleeve's peek state
+        discs.forEach(disc => {
+            disc.addEventListener("click", event => event.stopPropagation());
+
+            disc.addEventListener("dragstart", event => {
+                event.dataTransfer.setData("text/plain", disc.dataset.track);
+                event.dataTransfer.effectAllowed = "move";
+            });
+        });
+
+        turntable.addEventListener("dragover", event => {
+            event.preventDefault();
+            turntable.classList.add("is-drag-over");
+        });
+
+        turntable.addEventListener("dragleave", () => {
+            turntable.classList.remove("is-drag-over");
+        });
+
+        turntable.addEventListener("drop", event => {
+            event.preventDefault();
+            turntable.classList.remove("is-drag-over");
+
+            const track = event.dataTransfer.getData("text/plain");
+            const audio = getAudioByTrack(track);
+            if (!audio) return;
+
+            stopAllAudioExcept(track);
+
+            turntable.dataset.currentTrack = track;
+
+            const disc = getDiscByTrack(track);
+            if (nowPlayingLabel) {
+                nowPlayingLabel.textContent = disc
+                    ? `Now playing: ${disc.dataset.title}`
+                    : "Now playing";
+            }
+
+            const sleeve = document.querySelector(`.vinyl-sleeve[data-track="${track}"]`);
+            if (sleeve) sleeve.classList.remove("is-peeking");
+
+            audio.currentTime = 0;
+            audio.play();
+        });
+
+        audios.forEach(audio => {
+            audio.addEventListener("play", () => {
+                if (turntable.dataset.currentTrack === audio.dataset.track) {
+                    turntable.classList.add("is-playing");
+                }
+            });
+
+            audio.addEventListener("pause", () => {
+                if (turntable.dataset.currentTrack === audio.dataset.track) {
+                    turntable.classList.remove("is-playing");
+                }
+            });
+
+            audio.addEventListener("ended", () => {
+                if (turntable.dataset.currentTrack === audio.dataset.track) {
+                    turntable.classList.remove("is-playing");
+                    delete turntable.dataset.currentTrack;
+                }
+            });
+        });
+
+        function toggleCurrentPlayback() {
+            const track = turntable.dataset.currentTrack;
+            if (!track) return;
+
+            const audio = getAudioByTrack(track);
+            if (!audio) return;
+
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        if (turntableArm) {
+            let armWasDragged = false;
+
+            // Dragging the needle picks it up and drops it — either way toggles play/pause
+            turntableArm.addEventListener("dragstart", event => {
+                armWasDragged = true;
+                event.dataTransfer.effectAllowed = "move";
+                // mark this drag so the turntable's own drop handler ignores it
+                event.dataTransfer.setData("text/plain", "__arm__");
+            });
+
+            turntableArm.addEventListener("dragend", () => {
+                toggleCurrentPlayback();
+            });
+
+            // A plain click does the same thing
+            turntableArm.addEventListener("click", () => {
+                if (armWasDragged) {
+                    armWasDragged = false;
+                    return;
+                }
+                toggleCurrentPlayback();
+            });
+        }
+
+        // Backup ticket drawers
+        document.querySelectorAll(".ticket-tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+                const drawer = tab.closest(".ticket-drawer");
+                const isOpen = drawer.classList.toggle("is-open");
+                tab.setAttribute("aria-expanded", String(isOpen));
+            });
+        });
+    })();
 </script>
 
 </body>
