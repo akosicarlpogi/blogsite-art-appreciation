@@ -706,8 +706,17 @@
         );
     }
 
+    function resetVinylSleeveVisuals() {
+        document.querySelectorAll(".vinyl-sleeve").forEach(sleeve => {
+            sleeve.classList.remove("is-peeking", "is-return-target");
+        });
+    }
+
     function showArtworksPage() {
         if (pageTransitioning) return;
+
+        // Always re-enter the artworks page with every record sleeve closed.
+        resetVinylSleeveVisuals();
 
         pageTransitioning = true;
         artworksPageActive = false;
@@ -778,6 +787,9 @@
 
     function showWelcomePage() {
         if (pageTransitioning) return;
+
+        // Do not preserve an opened/peeked vinyl sleeve between page visits.
+        resetVinylSleeveVisuals();
 
         pageTransitioning = true;
         artworksPageActive = false;
