@@ -569,29 +569,98 @@ footer p {
     position: relative;
 }
 
+/* Keep the header/navigation above the decorative corners. */
+.artworks-topbar {
+    position: relative;
+    z-index: 2;
+}
+
+/* Decorative corner on the left. */
 .site-content::before {
     content: "";
     position: absolute;
-
     top: 0;
     left: 0;
-
     width: 220px;
-    height: 165px;
-
+    height: 220px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
-
     pointer-events: none;
-    z-index: 5;
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 1s ease;
 }
 
-/* Hidden only while Our Collected Artworks is alone */
+/* Mirrored decorative corner on the right, behind Arts & Appreciation. */
+.site-content::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 220px;
+    height: 220px;
+    background: url("../images/right_corner.png") top left / contain no-repeat;
+    transform: scaleX(-1);
+    transform-origin: center;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 1s ease;
+}
+
+/* Hide both corners while Our Collected Artworks is alone. */
 .site-content.intro-hold::before,
-.site-content.is-leaving-home::before {
+.site-content.intro-hold::after,
+.site-content.is-leaving-home::before,
+.site-content.is-leaving-home::after {
     opacity: 0;
 }
 
-/* Appear together with Arts & Appreciation + everything else */
-.site-content.intro-settle::before {
+/* Reveal both corners with Arts & Appreciation + everything else. */
+.site-content.intro-settle::before,
+.site-content.intro-settle::after {
     opacity: 1;
 }
+
+/* ---------- Footer corner ornaments ---------- */
+footer {
+    position: relative;
+    overflow: visible;
+    border-top: none !important;
+}
+
+/* Keep the footer text/navigation above the corner artwork. */
+footer > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Bottom-left ornament: flipped vertically but kept inside its 220px box. */
+footer::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    height: 220px;
+    background: url("../images/right_corner.png") top left / contain no-repeat;
+    transform: scaleY(-1);
+    transform-origin: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Bottom-right ornament: mirrored + flipped, also kept inside its box. */
+footer::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 220px;
+    height: 220px;
+    background: url("../images/right_corner.png") top left / contain no-repeat;
+    transform: scale(-1, -1);
+    transform-origin: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
