@@ -57,7 +57,7 @@
                 <div class="song-layout">
                     <div class="song-media">
                         <div class="vinyl-sleeve" data-track="bawat-araw">
-                            <div class="vinyl-disc" draggable="true" data-track="bawat-araw" data-title="Bawat Araw — Samantha De Leon"></div>
+                            <div class="vinyl-disc" draggable="true" data-track="bawat-araw" data-title="Bawat Araw" data-artist="Samantha De Leon"></div>
                             <figure>
                                 <img src="images/photos_songs_bawat_araw.png"
                                     alt="Bawat Araw song thumbnail">
@@ -107,10 +107,20 @@
             <div class="turntable" id="turntable">
                 <div class="turntable-body">
                     <div class="turntable-platter"></div>
-                    <div class="turntable-arm" draggable="true"></div>
+                    <div class="turntable-arm" draggable="false" role="button" tabindex="0" aria-label="Play or pause the current song" title="Click the needle to play / pause"></div>
                 </div>
+
+                <div class="turntable-controls" aria-label="Turntable playback controls">
+                    <button type="button" class="turntable-play" aria-label="Play" title="Play / pause" disabled>▶</button>
+                    <input class="turntable-progress" type="range" min="0" max="1000" value="0" aria-label="Song position" disabled>
+                    <span class="turntable-time">0:00 / 0:00</span>
+                </div>
+
                 <p class="turntable-hint">Drag a record here to play it</p>
-                <p class="turntable-now-playing"></p>
+                <p class="turntable-now-playing">
+                    <span class="turntable-now-label">Now playing:</span>
+                    <span class="turntable-now-track"></span>
+                </p>
             </div>
 
 <article class="artwork song ikigai">
@@ -143,7 +153,7 @@
 
                     <div class="song-media">
                         <div class="vinyl-sleeve ikigai" data-track="ikigai">
-                            <div class="vinyl-disc" draggable="true" data-track="ikigai" data-title="Ikigai — Oreh, Yuan &amp; Big J"></div>
+                            <div class="vinyl-disc" draggable="true" data-track="ikigai" data-title="Ikigai" data-artist="Oreh, Yuan &amp; Big J"></div>
                             <figure>
                                 <img src="images/photos_songs_ikigai.png"
                                     alt="Ikigai song thumbnail">
@@ -624,7 +634,8 @@
     function updateArtworkFocus() {
         if (!artworksPageActive || pageTransitioning) return;
 
-        const screenCenter = window.innerHeight / 2;
+        const viewportHeight = window.innerHeight;
+        const revealThreshold = 0.30;
 
         artworks.forEach(artwork => {
             if (artwork.classList.contains("is-active")) return;
@@ -633,14 +644,14 @@
             if (!media) return;
 
             const rect = media.getBoundingClientRect();
-            const mediaCenter = rect.top + rect.height / 2;
-            const distance = Math.abs(mediaCenter - screenCenter);
+            const visibleTop = Math.max(rect.top, 0);
+            const visibleBottom = Math.min(rect.bottom, viewportHeight);
+            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+            const visibleRatio = rect.height > 0
+                ? visibleHeight / rect.height
+                : 0;
 
-            if (
-                rect.bottom > 0 &&
-                rect.top < window.innerHeight &&
-                distance < window.innerHeight * 0.28
-            ) {
+            if (visibleRatio >= revealThreshold) {
                 artwork.classList.add("is-active");
             }
         });
@@ -736,6 +747,7 @@
                     siteContent.classList.add("is-visible");
 
                     window.scrollTo(0, 0);
+                    window.dispatchEvent(new CustomEvent("artworks:shown"));
 
                     setTimeout(() => {
                         siteContent.classList.remove("intro-hold");
@@ -817,20 +829,119 @@
     window.addEventListener("resize", () => {
         if (!artworksPageActive || pageTransitioning) return;
         prepareArtworkPositions();
+        updateArtworkFocus();
     });
 </script>
 
 <script>
-    // Vinyl sleeves, shared turntable, backup ticket drawers (Songs only)
+    // Vinyl sleeves, shared turntable, and simple turntable controls (Songs only)
     (function () {
         const turntable = document.getElementById("turntable");
         if (!turntable) return;
 
         const nowPlayingLabel = turntable.querySelector(".turntable-now-playing");
         const turntableArm = turntable.querySelector(".turntable-arm");
+        const turntablePlatter = turntable.querySelector(".turntable-platter");
+        const playButton = turntable.querySelector(".turntable-play");
+        const progressControl = turntable.querySelector(".turntable-progress");
+        const timeLabel = turntable.querySelector(".turntable-time");
         const sleeves = document.querySelectorAll(".vinyl-sleeve");
         const discs = document.querySelectorAll(".vinyl-disc");
         const audios = document.querySelectorAll("audio[data-track]");
+
+        // The turntable itself can be dragged anywhere in the viewport.
+        // Its position is clamped so no part of the player can be dragged off-screen.
+        let playerDrag = null;
+        let playerWasMoved = false;
+
+        function clampTurntablePosition(left, top) {
+            const rect = turntable.getBoundingClientRect();
+            const maxLeft = Math.max(0, window.innerWidth - rect.width);
+            const maxTop = Math.max(0, window.innerHeight - rect.height);
+
+            return {
+                left: Math.min(Math.max(0, left), maxLeft),
+                top: Math.min(Math.max(0, top), maxTop)
+            };
+        }
+
+        function getDefaultTurntablePosition() {
+            const page = document.getElementById("site-content");
+            const pageRect = page ? page.getBoundingClientRect() : null;
+
+            // Keep it visually inset inside the journal page by default.
+            const left = pageRect ? pageRect.left + 30 : 30;
+            const top = 24;
+
+            return clampTurntablePosition(left, top);
+        }
+
+        function resetTurntablePosition() {
+            const next = getDefaultTurntablePosition();
+            turntable.style.left = `${next.left}px`;
+            turntable.style.top = `${next.top}px`;
+            playerWasMoved = false;
+        }
+
+        window.addEventListener("artworks:shown", resetTurntablePosition);
+
+        function keepTurntableOnScreen() {
+            const rect = turntable.getBoundingClientRect();
+            const next = clampTurntablePosition(rect.left, rect.top);
+            turntable.style.left = `${next.left}px`;
+            turntable.style.top = `${next.top}px`;
+        }
+
+        turntable.addEventListener("pointerdown", event => {
+            // Controls, the tonearm, and the record/platter should stay interactive
+            // instead of moving the whole player.
+            if (event.target.closest(".turntable-arm, .turntable-controls, .turntable-platter")) return;
+
+            const rect = turntable.getBoundingClientRect();
+            playerDrag = {
+                pointerId: event.pointerId,
+                offsetX: event.clientX - rect.left,
+                offsetY: event.clientY - rect.top
+            };
+
+            turntable.classList.add("is-moving");
+            turntable.setPointerCapture(event.pointerId);
+            event.preventDefault();
+        });
+
+        turntable.addEventListener("pointermove", event => {
+            if (!playerDrag || playerDrag.pointerId !== event.pointerId) return;
+
+            const next = clampTurntablePosition(
+                event.clientX - playerDrag.offsetX,
+                event.clientY - playerDrag.offsetY
+            );
+
+            turntable.style.left = `${next.left}px`;
+            turntable.style.top = `${next.top}px`;
+            playerWasMoved = true;
+        });
+
+        function endPlayerDrag(event) {
+            if (!playerDrag || playerDrag.pointerId !== event.pointerId) return;
+
+            playerDrag = null;
+            turntable.classList.remove("is-moving");
+
+            if (turntable.hasPointerCapture(event.pointerId)) {
+                turntable.releasePointerCapture(event.pointerId);
+            }
+        }
+
+        turntable.addEventListener("pointerup", endPlayerDrag);
+        turntable.addEventListener("pointercancel", endPlayerDrag);
+        window.addEventListener("resize", () => {
+            if (playerWasMoved) {
+                keepTurntableOnScreen();
+            } else {
+                resetTurntablePosition();
+            }
+        });
 
         function getAudioByTrack(track) {
             return document.querySelector(`audio[data-track="${track}"]`);
@@ -838,6 +949,11 @@
 
         function getDiscByTrack(track) {
             return document.querySelector(`.vinyl-disc[data-track="${track}"]`);
+        }
+
+        function currentAudio() {
+            const track = turntable.dataset.currentTrack;
+            return track ? getAudioByTrack(track) : null;
         }
 
         function stopAllAudioExcept(track) {
@@ -848,14 +964,115 @@
             });
         }
 
-        // Click a sleeve to peek the disc out from behind the cover art
+        function formatTime(seconds) {
+            if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
+            return `${minutes}:${secs}`;
+        }
+
+        function setControlsEnabled(enabled) {
+            playButton.disabled = !enabled;
+            progressControl.disabled = !enabled;
+
+            if (turntablePlatter) {
+                turntablePlatter.draggable = enabled;
+                turntablePlatter.setAttribute(
+                    "aria-label",
+                    enabled
+                        ? "Current vinyl record. Drag it back to its cover to remove it from the turntable."
+                        : "Turntable platter"
+                );
+            }
+        }
+
+        function clearTurntableTrack() {
+            const audio = currentAudio();
+
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+
+            delete turntable.dataset.currentTrack;
+            turntable.classList.remove("has-track", "is-playing", "is-record-dragging");
+            setControlsEnabled(false);
+
+            progressControl.value = "0";
+            timeLabel.textContent = "0:00 / 0:00";
+            playButton.textContent = "▶";
+            playButton.setAttribute("aria-label", "Play");
+
+            const trackLabel = nowPlayingLabel?.querySelector(".turntable-now-track");
+            if (trackLabel) trackLabel.textContent = "";
+
+            sleeves.forEach(sleeve => {
+                sleeve.classList.remove("is-return-target");
+            });
+        }
+
+        function syncControls(audio) {
+            const isCurrent = audio && turntable.dataset.currentTrack === audio.dataset.track;
+            if (!isCurrent) return;
+
+            const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+            const progress = duration > 0 ? audio.currentTime / duration : 0;
+
+            progressControl.value = String(Math.round(progress * 1000));
+            timeLabel.textContent = `${formatTime(audio.currentTime)} / ${formatTime(duration)}`;
+            playButton.textContent = audio.paused ? "▶" : "Ⅱ";
+            playButton.setAttribute("aria-label", audio.paused ? "Play" : "Pause");
+        }
+
+        function loadTrackIntoTurntable(track) {
+            const audio = getAudioByTrack(track);
+            if (!audio) return null;
+
+            stopAllAudioExcept(track);
+            turntable.dataset.currentTrack = track;
+            turntable.classList.add("has-track");
+            setControlsEnabled(true);
+
+            const disc = getDiscByTrack(track);
+            const trackLabel = nowPlayingLabel?.querySelector(".turntable-now-track");
+            if (trackLabel) {
+                const title = disc?.dataset.title || "";
+                const artist = disc?.dataset.artist || "";
+                trackLabel.textContent = artist && title
+                    ? `${artist} - ${title}`
+                    : title || artist || "";
+            }
+
+            const sleeve = document.querySelector(`.vinyl-sleeve[data-track="${track}"]`);
+            if (sleeve) sleeve.classList.remove("is-peeking");
+
+            if (turntablePlatter) {
+                turntablePlatter.draggable = true;
+            }
+
+            syncControls(audio);
+            return audio;
+        }
+
+        // Click a sleeve to peek the disc out from behind the cover art.
+        // If that exact record is already playing on the turntable, keep the
+        // sleeve closed so repeated clicks do not make the disc pop out again.
         sleeves.forEach(sleeve => {
             sleeve.addEventListener("click", () => {
+                const track = sleeve.dataset.track;
+                const audio = getAudioByTrack(track);
+                const isCurrentTrackPlaying =
+                    audio &&
+                    !audio.paused &&
+                    turntable.dataset.currentTrack === track;
+
+                if (isCurrentTrackPlaying) return;
+
                 sleeve.classList.toggle("is-peeking");
             });
         });
 
-        // Dragging the disc itself shouldn't also toggle the sleeve's peek state
+        // Dragging the disc itself shouldn't also toggle the sleeve's peek state.
         discs.forEach(disc => {
             disc.addEventListener("click", event => event.stopPropagation());
 
@@ -878,57 +1095,112 @@
             event.preventDefault();
             turntable.classList.remove("is-drag-over");
 
-            const track = event.dataTransfer.getData("text/plain");
-            const audio = getAudioByTrack(track);
-            if (!audio) return;
-
-            stopAllAudioExcept(track);
-
-            turntable.dataset.currentTrack = track;
-
-            const disc = getDiscByTrack(track);
-            if (nowPlayingLabel) {
-                nowPlayingLabel.textContent = disc
-                    ? `Now playing: ${disc.dataset.title}`
-                    : "Now playing";
+            // Ignore a record that is already on the turntable being dragged
+            // over the turntable itself.
+            if (event.dataTransfer.getData("application/x-vinyl-source") === "turntable") {
+                return;
             }
 
-            const sleeve = document.querySelector(`.vinyl-sleeve[data-track="${track}"]`);
-            if (sleeve) sleeve.classList.remove("is-peeking");
+            const track = event.dataTransfer.getData("text/plain");
+            const audio = loadTrackIntoTurntable(track);
+            if (!audio) return;
 
             audio.currentTime = 0;
             audio.play();
         });
 
-        audios.forEach(audio => {
-            audio.addEventListener("play", () => {
-                if (turntable.dataset.currentTrack === audio.dataset.track) {
-                    turntable.classList.add("is-playing");
+        // The selected vinyl can be picked back up from the platter and
+        // returned to its matching sleeve. This removes it from the turntable.
+        if (turntablePlatter) {
+            turntablePlatter.addEventListener("dragstart", event => {
+                const track = turntable.dataset.currentTrack;
+                if (!track) {
+                    event.preventDefault();
+                    return;
+                }
+
+                event.dataTransfer.setData("text/plain", track);
+                event.dataTransfer.setData("application/x-vinyl-source", "turntable");
+                event.dataTransfer.effectAllowed = "move";
+                turntable.classList.add("is-record-dragging");
+
+                const matchingSleeve = document.querySelector(`.vinyl-sleeve[data-track="${track}"]`);
+                matchingSleeve?.classList.add("is-return-target");
+            });
+
+            turntablePlatter.addEventListener("dragend", () => {
+                turntable.classList.remove("is-record-dragging");
+                sleeves.forEach(sleeve => sleeve.classList.remove("is-return-target"));
+            });
+        }
+
+        sleeves.forEach(sleeve => {
+            sleeve.addEventListener("dragover", event => {
+                const currentTrack = turntable.dataset.currentTrack;
+                if (!currentTrack || sleeve.dataset.track !== currentTrack) return;
+
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "move";
+                sleeve.classList.add("is-return-target");
+            });
+
+            sleeve.addEventListener("dragleave", event => {
+                if (!sleeve.contains(event.relatedTarget)) {
+                    sleeve.classList.remove("is-return-target");
                 }
             });
 
-            audio.addEventListener("pause", () => {
-                if (turntable.dataset.currentTrack === audio.dataset.track) {
-                    turntable.classList.remove("is-playing");
-                }
-            });
+            sleeve.addEventListener("drop", event => {
+                const source = event.dataTransfer.getData("application/x-vinyl-source");
+                const track = event.dataTransfer.getData("text/plain");
 
-            audio.addEventListener("ended", () => {
-                if (turntable.dataset.currentTrack === audio.dataset.track) {
-                    turntable.classList.remove("is-playing");
-                    delete turntable.dataset.currentTrack;
-                }
+                if (source !== "turntable" || track !== sleeve.dataset.track) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+                sleeve.classList.remove("is-return-target", "is-peeking");
+                clearTurntableTrack();
             });
         });
 
         function toggleCurrentPlayback() {
-            const track = turntable.dataset.currentTrack;
-            if (!track) return;
-
-            const audio = getAudioByTrack(track);
+            const audio = currentAudio();
             if (!audio) return;
 
             if (audio.paused) {
+                if (audio.ended || (Number.isFinite(audio.duration) && audio.currentTime >= audio.duration)) {
+                    audio.currentTime = 0;
+                }
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        playButton.addEventListener("click", event => {
+            event.stopPropagation();
+            toggleCurrentPlayback();
+        });
+
+        progressControl.addEventListener("input", event => {
+            event.stopPropagation();
+            const audio = currentAudio();
+            if (!audio || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+
+            audio.currentTime = (Number(progressControl.value) / 1000) * audio.duration;
+            syncControls(audio);
+        });
+
+        // The tonearm works like the play/pause control:
+        // needle on the record = playing, needle lifted away = paused.
+        function toggleTonearmPlayback() {
+            const audio = currentAudio();
+            if (!audio) return;
+
+            if (audio.paused) {
+                if (audio.ended || (Number.isFinite(audio.duration) && audio.currentTime >= audio.duration)) {
+                    audio.currentTime = 0;
+                }
                 audio.play();
             } else {
                 audio.pause();
@@ -936,29 +1208,55 @@
         }
 
         if (turntableArm) {
-            let armWasDragged = false;
-
-            // Dragging the needle picks it up and drops it — either way toggles play/pause
-            turntableArm.addEventListener("dragstart", event => {
-                armWasDragged = true;
-                event.dataTransfer.effectAllowed = "move";
-                // mark this drag so the turntable's own drop handler ignores it
-                event.dataTransfer.setData("text/plain", "__arm__");
+            turntableArm.addEventListener("click", event => {
+                event.stopPropagation();
+                toggleTonearmPlayback();
             });
 
-            turntableArm.addEventListener("dragend", () => {
-                toggleCurrentPlayback();
-            });
-
-            // A plain click does the same thing
-            turntableArm.addEventListener("click", () => {
-                if (armWasDragged) {
-                    armWasDragged = false;
-                    return;
+            turntableArm.addEventListener("keydown", event => {
+                if (event.key === " " || event.key === "Enter") {
+                    event.preventDefault();
+                    toggleTonearmPlayback();
                 }
-                toggleCurrentPlayback();
             });
         }
+
+        audios.forEach(audio => {
+            audio.addEventListener("loadedmetadata", () => syncControls(audio));
+            audio.addEventListener("timeupdate", () => syncControls(audio));
+            audio.addEventListener("volumechange", () => syncControls(audio));
+
+            audio.addEventListener("play", () => {
+                // If the fallback/backup player was used directly, mirror that
+                // track into the shared turntable as well.
+                if (turntable.dataset.currentTrack !== audio.dataset.track) {
+                    loadTrackIntoTurntable(audio.dataset.track);
+                }
+
+                if (turntable.dataset.currentTrack === audio.dataset.track) {
+                    turntable.classList.add("is-playing");
+                    turntable.classList.add("has-track");
+                    syncControls(audio);
+                }
+            });
+
+            audio.addEventListener("pause", () => {
+                if (turntable.dataset.currentTrack === audio.dataset.track) {
+                    turntable.classList.remove("is-playing");
+                    syncControls(audio);
+                }
+            });
+
+            audio.addEventListener("ended", () => {
+                if (turntable.dataset.currentTrack === audio.dataset.track) {
+                    turntable.classList.remove("is-playing");
+                    audio.currentTime = 0;
+                    syncControls(audio);
+                }
+            });
+        });
+
+        setControlsEnabled(false);
 
         // Backup ticket drawers
         document.querySelectorAll(".ticket-tab").forEach(tab => {
@@ -967,6 +1265,153 @@
                 const isOpen = drawer.classList.toggle("is-open");
                 tab.setAttribute("aria-expanded", String(isOpen));
             });
+        });
+    })();
+</script>
+
+<script>
+    // Image focus overlay for Architecture, Sculpture, and Literature only.
+    // Songs keep their vinyl interaction instead of opening the viewer.
+    (function () {
+        const galleryImages = document.querySelectorAll(
+            ".architecture-section img, .sculpture-section img, .literature-section img"
+        );
+
+        if (!galleryImages.length) return;
+
+        const overlay = document.createElement("div");
+        overlay.className = "art-lightbox";
+        overlay.setAttribute("aria-hidden", "true");
+        overlay.innerHTML = `
+            <div class="art-lightbox-toolbar" role="toolbar" aria-label="Image zoom controls">
+                <button type="button" class="art-lightbox-zoom-out" aria-label="Zoom out" title="Zoom out">−</button>
+                <button type="button" class="art-lightbox-reset" aria-label="Reset zoom" title="Reset zoom">100%</button>
+                <button type="button" class="art-lightbox-zoom-in" aria-label="Zoom in" title="Zoom in">+</button>
+                <button type="button" class="art-lightbox-close" aria-label="Close image" title="Close">×</button>
+            </div>
+            <div class="art-lightbox-stage">
+                <img class="art-lightbox-image" alt="">
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const image = overlay.querySelector(".art-lightbox-image");
+        const stage = overlay.querySelector(".art-lightbox-stage");
+        const zoomOutButton = overlay.querySelector(".art-lightbox-zoom-out");
+        const zoomInButton = overlay.querySelector(".art-lightbox-zoom-in");
+        const resetButton = overlay.querySelector(".art-lightbox-reset");
+        const closeButton = overlay.querySelector(".art-lightbox-close");
+
+        let zoom = 1;
+        let baseWidth = 0;
+        let baseHeight = 0;
+
+        function updateZoom() {
+            if (!baseWidth || !baseHeight) return;
+
+            image.style.width = `${baseWidth * zoom}px`;
+            image.style.height = `${baseHeight * zoom}px`;
+            resetButton.textContent = `${Math.round(zoom * 100)}%`;
+
+            zoomOutButton.disabled = zoom <= 0.5;
+            zoomInButton.disabled = zoom >= 4;
+        }
+
+        function setZoom(nextZoom) {
+            zoom = Math.min(4, Math.max(0.5, nextZoom));
+            updateZoom();
+        }
+
+        function fitImageToViewport() {
+            if (!image.naturalWidth || !image.naturalHeight) return;
+
+            const maxWidth = window.innerWidth * 0.84;
+            const maxHeight = window.innerHeight * 0.78;
+            const fitScale = Math.min(
+                maxWidth / image.naturalWidth,
+                maxHeight / image.naturalHeight,
+                1
+            );
+
+            baseWidth = Math.max(1, image.naturalWidth * fitScale);
+            baseHeight = Math.max(1, image.naturalHeight * fitScale);
+            zoom = 1;
+            updateZoom();
+            stage.scrollTop = 0;
+            stage.scrollLeft = 0;
+        }
+
+        function openViewer(sourceImage) {
+            image.onload = fitImageToViewport;
+            image.src = sourceImage.currentSrc || sourceImage.src;
+            image.alt = sourceImage.alt || "Artwork image";
+
+            overlay.classList.add("is-open");
+            overlay.setAttribute("aria-hidden", "false");
+            document.body.classList.add("art-lightbox-open");
+            closeButton.focus({ preventScroll: true });
+
+            if (image.complete) fitImageToViewport();
+        }
+
+        function closeViewer() {
+            overlay.classList.remove("is-open");
+            overlay.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("art-lightbox-open");
+            image.removeAttribute("src");
+            baseWidth = 0;
+            baseHeight = 0;
+            zoom = 1;
+        }
+
+        galleryImages.forEach(galleryImage => {
+            galleryImage.classList.add("zoomable-art-image");
+            galleryImage.setAttribute("tabindex", "0");
+            galleryImage.setAttribute("role", "button");
+            galleryImage.setAttribute("aria-label", `${galleryImage.alt || "Artwork image"}. Open image viewer.`);
+
+            galleryImage.addEventListener("click", event => {
+                event.preventDefault();
+                openViewer(galleryImage);
+            });
+
+            galleryImage.addEventListener("keydown", event => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openViewer(galleryImage);
+                }
+            });
+        });
+
+        zoomInButton.addEventListener("click", () => setZoom(zoom + 0.25));
+        zoomOutButton.addEventListener("click", () => setZoom(zoom - 0.25));
+        resetButton.addEventListener("click", () => setZoom(1));
+        closeButton.addEventListener("click", closeViewer);
+
+        // Mouse-wheel input is intentionally left to the scrollable stage,
+        // so the wheel only pans the enlarged image vertically. Zooming is
+        // controlled exclusively by the + / - / reset buttons (and keyboard).
+
+        overlay.addEventListener("click", event => {
+            if (event.target === overlay) closeViewer();
+        });
+
+        document.addEventListener("keydown", event => {
+            if (!overlay.classList.contains("is-open")) return;
+
+            if (event.key === "Escape") {
+                closeViewer();
+            } else if (event.key === "+" || event.key === "=") {
+                setZoom(zoom + 0.25);
+            } else if (event.key === "-") {
+                setZoom(zoom - 0.25);
+            } else if (event.key === "0") {
+                setZoom(1);
+            }
+        });
+
+        window.addEventListener("resize", () => {
+            if (overlay.classList.contains("is-open")) fitImageToViewport();
         });
     })();
 </script>

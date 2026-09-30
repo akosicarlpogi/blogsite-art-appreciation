@@ -492,7 +492,7 @@ hr {
 .artwork > h2 {
     display: inline-block;
     transform: translateX(var(--title-shift, 0px));
-    transition: transform 1s ease;
+    transition: transform 0.8s ease;
 }
 
 .song-media,
@@ -501,13 +501,13 @@ hr {
 .sculpture-media,
 .literature-media {
     transform: translateX(var(--media-shift, 0px));
-    transition: transform 1s ease;
+    transition: transform 0.8s ease;
     will-change: transform;
 }
 
 .artwork img {
     filter: grayscale(100%);
-    transition: filter 1s ease;
+    transition: filter 0.75s ease;
 }
 
 
@@ -524,7 +524,7 @@ hr {
 
 .artwork.is-active > h2 {
     transform: translateX(0);
-    transition-delay: 0.5s;
+    transition-delay: 0.2s;
 }
 
 .artwork.is-active .song-media,
@@ -533,12 +533,12 @@ hr {
 .artwork.is-active .sculpture-media,
 .artwork.is-active .literature-media {
     transform: translateX(0);
-    transition-delay: 0.5s;
+    transition-delay: 0.2s;
 }
 
 .artwork.is-active img {
     filter: grayscale(0%);
-    transition-delay: 0.5s;
+    transition-delay: 0.2s;
 }
 
 .artwork .description,
@@ -567,7 +567,7 @@ hr {
 .artwork.is-active .zavalla-owner {
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.3s ease 1.2s;
+    transition: opacity 0.25s ease 0.65s;
 }
 
 .artwork .description p,
@@ -579,7 +579,7 @@ hr {
 .artwork.is-active .description p,
 .artwork.is-active .interpretation p,
 .artwork.is-active .our-interpretation p {
-    animation: reveal-lines 0.7s steps(8, end) 1.2s forwards;
+    animation: reveal-lines 0.55s steps(8, end) 0.65s forwards;
 }
 
 @keyframes reveal-lines {
