@@ -581,8 +581,8 @@ footer p {
     position: absolute;
     top: 0;
     left: 0;
-    width: 280px;
-    height: 280px;
+    width: 220px;
+    height: 220px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     pointer-events: none;
     z-index: 1;
@@ -596,8 +596,8 @@ footer p {
     position: absolute;
     top: 0;
     right: 0;
-    width: 280px;
-    height: 280px;
+    width: 220px;
+    height: 220px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     transform: scaleX(-1);
     transform-origin: center;
@@ -640,8 +640,8 @@ footer::before {
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 280px;
-    height: 280px;
+    width: 220px;
+    height: 220px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     transform: scaleY(-1);
     transform-origin: center;
@@ -655,8 +655,8 @@ footer::after {
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 280px;
-    height: 280px;
+    width: 220px;
+    height: 220px;
     background: url("../images/right_corner.png") top left / contain no-repeat;
     transform: scale(-1, -1);
     transform-origin: center;
@@ -664,3 +664,102 @@ footer::after {
     z-index: 1;
 }
 
+/* ============================================================
+   Full paper pages between the ornamental dividers
+   ------------------------------------------------------------
+   Each page wrapper uses one oversized HD paper image. The image
+   is proportionally scaled with `cover`, so it is cropped rather
+   than distorted. The wrapper itself reaches through the divider
+   area so there are no plain off-white gaps between pages.
+   ============================================================ */
+.paper-page {
+    position: relative;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    background-color: var(--paper);
+    background-image: url("../images/background-section.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+
+    image-rendering: auto;
+}
+
+/* The first paper page includes the complete artworks header,
+   so Our Collected Artworks, Arts & Appreciation and Songs all
+   sit on the same sheet. */
+.paper-page-songs {
+    padding-top: 0;
+}
+
+/* Let each category run right up to its divider. The old spacing
+   remains inside the paper background rather than exposing the
+   plain site background. */
+.paper-page .art-category {
+    margin-bottom: 0;
+}
+
+.paper-page > .category-divider,
+.paper-page > .main-divider {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* The final paper sheet contains the last divider, About section,
+   credits and footer navigation as one continuous background. */
+.paper-page-about {
+    padding-bottom: 0;
+}
+
+.paper-page-about footer {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+/* The mirrored top-right corner belongs to the actual journal page
+   edge. Keep it flush there rather than offsetting it inward. */
+.site-content::after {
+    right: 0;
+}
+
+
+/* ============================================================
+   Paper page edge alignment fixes
+   ------------------------------------------------------------
+   Keep Songs and About exactly as-is (they are already aligned).
+   Architecture, Sculpture and Literature extend upward into the
+   divider band while preserving the original content position.
+   Literature also extends downward into the final divider band.
+   ============================================================ */
+.paper-page-architecture,
+.paper-page-sculpture,
+.paper-page-literature {
+    margin-top: -50px;
+    padding-top: 50px;
+}
+
+.paper-page-literature {
+    margin-bottom: -64px;
+    padding-bottom: 64px;
+}
+
+
+/* Keep the ornamental divider line and flourishes above the paper sheets. */
+.category-divider,
+.main-divider {
+    position: relative;
+    z-index: 20;
+}
+
+.category-divider::before,
+.category-divider::after,
+.main-divider::before,
+.main-divider::after {
+    z-index: 21;
+    pointer-events: none;
+}
