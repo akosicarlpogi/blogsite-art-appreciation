@@ -481,6 +481,9 @@ footer p {
 .artworks-title {
     border-bottom: none;
     padding-bottom: 4px;
+
+    position: relative;
+    left: -10px;
 }
 
 .artworks-title-area::after {
@@ -560,4 +563,35 @@ footer p {
 
 .welcome-content h1 {
     white-space: nowrap;
+}
+
+.site-content {
+    position: relative;
+}
+
+.site-content::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 220px;
+    height: 165px;
+
+    background: url("../images/right_corner.png") top left / contain no-repeat;
+
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Hidden only while Our Collected Artworks is alone */
+.site-content.intro-hold::before,
+.site-content.is-leaving-home::before {
+    opacity: 0;
+}
+
+/* Appear together with Arts & Appreciation + everything else */
+.site-content.intro-settle::before {
+    opacity: 1;
 }
